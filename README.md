@@ -1,2 +1,1 @@
-# tonkatsu-tamafuji-checker
-Tonkatsu Tamafuji Checker
+# Tonkatsu Tamafuji Checker

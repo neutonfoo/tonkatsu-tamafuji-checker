@@ -1,0 +1,15 @@
+{
+  "name": "tonkatsu-tamafuji-checker",
+  "version": "1.0.0",
+  "description": "A Puppeteer bot for checking Tonkatsu Tamafuji in Hawaii :^)",
+  "main": "index.js",
+  "repository": "git@github.com:neutonfoo/tonkatsu-tamafuji-checker.git",
+  "author": "Neuton Foo <neuton.foo@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "puppeteer": "^13.5.1"
+  }
+}
