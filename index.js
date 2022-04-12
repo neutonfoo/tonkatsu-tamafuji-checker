@@ -4,7 +4,7 @@ const puppeteer = require("puppeteer");
 // Config / Options
 const runHeadless = false;
 const numberOfAdults = 2;
-const dateToCheck = "2022-2-23"; // Do not put a Tuesday
+const dateToCheck = "2022-04-04"; // Do not put a Tuesday
 const ajaxWaitInterval = 2000;
 const timeoutInterval = 2000;
 
@@ -45,11 +45,16 @@ const selectTimeValues =
   await page.select("#reservation_num_people_adult", `${numberOfAdults}`);
 
   //   Select Date
-  await page.click("#reservation_start_date");
-  const dateSelect = await page.waitForSelector(
-    `div[data-full="${dateToCheck}"]`
+  // await page.click("#reservation_start_date");
+
+  await page.$eval(
+    "#reservation_start_date",
+    (el, dateToCheck) => {
+      el.value = dateToCheck;
+      el.dispatchEvent(new Event("change"));
+    },
+    dateToCheck
   );
-  await dateSelect.click();
 
   await new Promise(r => setTimeout(r, ajaxWaitInterval));
 
@@ -66,48 +71,50 @@ const selectTimeValues =
     );
   }
 
-  const availability = await page.$("#availability");
+  console.log(selectTimeValues);
 
-  while (true) {
-    await page.select(
-      "select#reservation_start_at_epoch",
-      selectTimeValues[checkingTimeState++]
-    );
+  // const availability = await page.$("#availability");
 
-    if (checkingTimeState === selectTimeValues.length) {
-      checkingTimeState = 0;
-    }
+  // while (true) {
+  //   await page.select(
+  //     "select#reservation_start_at_epoch",
+  //     selectTimeValues[checkingTimeState++]
+  //   );
 
-    let isCheckingOtherDates = true;
-    let availabilityValue = "";
+  //   if (checkingTimeState === selectTimeValues.length) {
+  //     checkingTimeState = 0;
+  //   }
 
-    // Wait for Checking Other Date
-    while (isCheckingOtherDates) {
-      await new Promise(r => setTimeout(r, ajaxWaitInterval));
+  //   let isCheckingOtherDates = true;
+  //   let availabilityValue = "";
 
-      availabilityValue = (
-        await page.evaluate(el => el.textContent, availability)
-      ).trim();
+  //   // Wait for Checking Other Date
+  //   while (isCheckingOtherDates) {
+  //     await new Promise(r => setTimeout(r, ajaxWaitInterval));
 
-      if (
-        availabilityValue === "" ||
-        !availabilityValue.includes("Checking other dates…")
-      ) {
-        isCheckingOtherDates = false;
-      }
-    }
+  //     availabilityValue = (
+  //       await page.evaluate(el => el.textContent, availability)
+  //     ).trim();
 
-    // if (availabilityValue.includes("but")) {
-    console.log(new Date().toLocaleString() + " --> " + availabilityValue);
-    // }
+  //     if (
+  //       availabilityValue === "" ||
+  //       !availabilityValue.includes("Checking other dates…")
+  //     ) {
+  //       isCheckingOtherDates = false;
+  //     }
+  //   }
 
-    // if (!seenSet.has(availabilityValue)) {
-    //   console.log(new Date().toLocaleString() + " --> " + availabilityValue);
-    //   seenSet.add(availabilityValue);
-    // }
+  //   if (availabilityValue.includes("but")) {
+  //     console.log(new Date().toLocaleString() + " --> " + availabilityValue);
+  //   }
 
-    await new Promise(r => setTimeout(r, timeoutInterval));
-  }
+  //   // if (!seenSet.has(availabilityValue)) {
+  //   //   console.log(new Date().toLocaleString() + " --> " + availabilityValue);
+  //   //   seenSet.add(availabilityValue);
+  //   // }
 
-  await browser.close();
+  //   await new Promise(r => setTimeout(r, timeoutInterval));
+  // }
+
+  // await browser.close();
 })();
